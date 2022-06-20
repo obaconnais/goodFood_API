@@ -8,10 +8,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-    - name: Publish to GitHub Packages
-      uses: docker/build-push-actions@v2
-      with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: ghcr.io
-        repository: ${{ github.repository }}
+      - name: Publish to GitHub Packages
+        uses: docker/build-push-actions@v2
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          repository: ${{ github.repository }}

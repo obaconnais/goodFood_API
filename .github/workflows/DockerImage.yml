@@ -8,19 +8,44 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+
+
+      - name: GithubPackages Login
+        uses: docker/login-action@v1.10.0
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish to GitHub Packages
-        uses: docker/build-push-actions@v3
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
         with:
-          load: true
+          images: ghcr.io/${{ github.repository }}
+      - name: Build and push Docker images
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
           push: true
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
-          repository: goodFood_API_toto
-          # repository: ${{ github.repository }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
+
+      # - name: Login to GitHub Container Registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Publish to GitHub Packages
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: .
+      #     load: true
+      #     push: true
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      #     registry: ghcr.io
+      #     repository: goodFood_API_toto
+      #     # repository: ${{ github.repository }}
